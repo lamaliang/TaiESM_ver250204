@@ -1,0 +1,17 @@
+#! /bin/csh -f
+
+# -------------------------------------------------------------------------
+# USERDEFINED
+# Edit this file to add module load or other paths needed for the build
+# and run on the system.  Can also include general env settings for machine.
+# Some samples are below
+# -------------------------------------------------------------------------
+
+source /usr/share/lmod/lmod/init/csh
+module purge
+module use /home/yhtseng00/modulefiles
+module load coda/intel/2022.3.1/intelmpi/netcdf/4.9.2 coda/intel/2022.3.1/intelmpi/pnetcdf/1.8.1
+module load coda/tools/perl/5.16.3 coda/tools/cmake/3.28.4
+
+#limit coredumpsize unlimited
+

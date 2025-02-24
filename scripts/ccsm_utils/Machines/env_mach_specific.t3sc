@@ -1,0 +1,28 @@
+#! /bin/csh -f
+
+# -------------------------------------------------------------------------
+# USERDEFINED
+# Edit this file to add module load or other paths needed for the build
+# and run on the system.  Can also include general env settings for machine.
+# Some samples are below
+# -------------------------------------------------------------------------
+source /usr/share/lmod/lmod/init/csh
+module purge
+module use /opt/ohpc/pkg/rcec/opt/modulefiles
+module load rcec/stack-impi
+setenv MPI_PATH ${intel_mpi_ROOT}
+setenv MPIEXEC "mpiexec -launcher srun"
+module load esmf/8.6.0
+module load cmake/3.23.1
+
+setenv esmf_ROOT `dirname $ESMFMKFILE|xargs dirname`
+setenv netcdf_fortran_ROOT `nf-config --prefix`
+setenv parallel_netcdf_ROOT `pnetcdf-config --prefix`
+setenv NETCDF_Fortran_PATH $netcdf_fortran_ROOT
+setenv NETCDF_Fortran_DIR $netcdf_fortran_ROOT
+setenv PNETCDF_DIR $parallel_netcdf_ROOT
+setenv ESMF_LIBSDIR $esmf_ROOT/lib
+# -------------------------------------------------------------------------
+# Build and runtime environment variables - edit before the initial build
+# -------------------------------------------------------------------------
+#setenv OMP_STACKSIZE 512M

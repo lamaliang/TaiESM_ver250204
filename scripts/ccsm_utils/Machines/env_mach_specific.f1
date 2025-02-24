@@ -1,0 +1,15 @@
+#! /bin/csh -f
+# -------------------------------------------------------------------------
+# Bluefire build specific settings
+# -------------------------------------------------------------------------
+source /usr/share/lmod/lmod/init/csh
+module purge
+module use /home/yhtseng00/modulefiles
+module load coda/peta4_2022 coda/tools/perl/5.16.3
+#module load coda/tools/perl/5.16.3 
+#module load coda/intel/2022.3.1/intelmpi/esmf
+
+# -------------------------------------------------------------------------
+# Build and runtime environment variables - edit before the initial build 
+# -------------------------------------------------------------------------
+#setenv OMP_STACKSIZE 512M

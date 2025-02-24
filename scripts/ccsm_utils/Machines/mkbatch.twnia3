@@ -1,0 +1,115 @@
+#!/bin/csh -f
+set mach = twnia3 
+
+#################################################################################
+if ($PHASE == set_batch) then
+#################################################################################
+
+source ./Tools/ccsm_getenv || exit -1
+
+set ntasks  = `${CASEROOT}/Tools/taskmaker.pl -sumonly`
+set maxthrds = `${CASEROOT}/Tools/taskmaker.pl -maxthrds`
+@ nodes = $ntasks / ${MAX_TASKS_PER_NODE}
+if ( $ntasks % ${MAX_TASKS_PER_NODE} > 0) then
+  @ nodes = $nodes + 1
+  @ ntasks = $nodes * ${MAX_TASKS_PER_NODE}
+endif
+@ taskpernode = ${MAX_TASKS_PER_NODE} / ${maxthrds}
+
+if ( $ntasks <= 56 ) then
+  set qname = ct56
+else if ( $ntasks <= 224 ) then
+  set qname = ct224
+else if ( $ntasks <= 560 ) then
+  set qname = ct560 
+else if ( $ntasks <= 2000 ) then
+  set qname = ct2k 
+else if ( $ntasks <= 8000 ) then
+  set qname = ct8k 
+endif
+set tlimit = "24:00:00"
+
+#--- Job name is first fifteen characters of case name ---
+#set jobname = `echo ${CASE} | cut -c1-15` # first fifteen characters of case name
+set jobname = `echo ${CASE}` # first fifteen characters of case name
+
+if ($?TESTMODE) then
+ set file = $CASEROOT/${CASE}.test
+else
+ set file = $CASEROOT/${CASE}.run
+endif
+
+mkdir -p ${CASEROOT}/stdout
+cat >! $file << EOF1
+#!/bin/csh -f
+#===============================================================================
+#  This is a CCSM batch job script 
+#===============================================================================]
+#SBATCH -J ${jobname}
+#SBATCH -p ${qname}
+#SBATCH -n ${ntasks}
+#SBATCH --ntasks-per-node=56
+#SBATCH --account=MST112228
+#SBATCH -o stdout/%j.out
+#SBATCH -e stdout/%j.err
+
+source env_mach_specific
+limit stacksize    unlimited
+limit coredumpsize unlimited
+limit datasize     unlimited
+
+EOF1
+
+
+#################################################################################
+else if ($PHASE == set_exe) then
+#################################################################################
+source ./Tools/ccsm_getenv || exit -1
+
+set maxthrds = `${CASEROOT}/Tools/taskmaker.pl -maxthrds`
+set maxtasks = `${CASEROOT}/Tools/taskmaker.pl -sumtasks`
+
+cat >> ${CASEROOT}/${CASE}.run << EOF1
+# -------------------------------------------------------------------------
+# Run the model
+# -------------------------------------------------------------------------
+
+sleep 5
+cd \$RUNDIR
+echo "\`date\` -- CSM EXECUTION BEGINS HERE" 
+
+setenv OMP_NUM_THREADS ${maxthrds}
+
+#!sc:t3 seem to complain about using hydra so use mpirun instead
+#srun --mpi=pmi2 -n \$SLURM_NTASKS \$EXEROOT/cesm.exe >&! cesm.log.\$LID
+#mpirun -n \$SLURM_NTASKS \$EXEROOT/cesm.exe >&! cesm.log.\$LID
+#mpiexec -launcher srun -n \$SLURM_NTASKS \$EXEROOT/cesm.exe >&! cesm.log.\$LID
+#\$MPIEXEC -n \$SLURM_NTASKS \$EXEROOT/cesm.exe >&! cesm.log.\$LID
+mpiexec -np \$SLURM_NTASKS \$EXEROOT/cesm.exe >&! cesm.log.\$LID
+
+wait
+
+echo "\`date\` -- CSM EXECUTION HAS FINISHED" 
+
+EOF1
+
+
+#################################################################################
+else if ($PHASE == set_larch) then
+#################################################################################
+
+
+   #This is a place holder for a long-term archiving script
+
+
+#################################################################################
+else
+#################################################################################
+
+    echo "  PHASE setting of $PHASE is not an accepted value"
+    echo "  accepted values are set_batch, set_exe and set_larch"
+    exit 1
+
+#################################################################################
+endif
+#################################################################################

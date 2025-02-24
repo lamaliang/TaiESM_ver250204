@@ -1,0 +1,15 @@
+Tag name: taiesm_ver250204
+This version is add Nudging name list 
+./models/atm/cam/bld/namelist_files/namelist_definition.xml
+
+
+Tag name: cesm1_2_2
+Originator(s): cseg
+Date: Wed Jun 11, 2014
+One-line Summary: Third released version of the cesm1.2.0 code.
+
+This tag is the third officially released version of the cesm1.2.0 code.
+Release tag cesm1_2_2 corresponds to internal release candidate
+cesm1_2_2_rel04
+
+
