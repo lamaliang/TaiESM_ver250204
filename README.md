@@ -8,8 +8,8 @@ Taiwan Earth System Model 1
 2. mkdir taiesm_work
 
 ### 複製創建case的shell script至taiesm_work資料夾  
- 3. cd taiesm_work  
- 4. cp /work1/j07hcl00/taiesm_work/run_taiesm1_case-setup_example.sh . 
+3. cd taiesm_work  
+4. cp /work1/j07hcl00/taiesm_work/run_taiesm1_case-setup_example.sh . 
 
 ### 建立模擬case，並且檢查是否有問題  
 5. cat setup.case.csh  
