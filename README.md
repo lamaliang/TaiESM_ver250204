@@ -31,7 +31,7 @@ Taiwan Earth System Model 1
 11. ./f09.F2000.ESMclass.t01.build
 
 ### 使用排成軟體將模擬程式送出去  
-12. vi f09.B2000.taiesm1-test1.run
+12. vi f09.F2000.ESMclass.t01.run 
 
 ### 根據cpu數量使用不同的queue 
 13. 修改第六行 #SBATCH -p '__ct1k__' or '__ct2k__'等等之類的
